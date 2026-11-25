@@ -14,7 +14,8 @@ using UnityEngine.InputSystem;
 /// 
 /// Script: DragDropSprite.cs
 /// Responsabilidad: Permitir el arrastre interactivo universal de objetos (Sprites 2D y Objetos 3D como Cubos)
-/// Compatible tanto con el nuevo Input System de Unity 6 como con el Input Manager clásico.
+/// con límites delimitados de movimiento (para evitar que se salga de la pantalla o del área de juego),
+/// retorno elástico a posición inicial y soporte para Unity 6 Input System.
 /// </summary>
 public class DragDropSprite : MonoBehaviour
 {
@@ -27,6 +28,19 @@ public class DragDropSprite : MonoBehaviour
 
     [Tooltip("Velocidad de interpolación de movimiento hacia la posición inicial.")]
     [SerializeField] private float returnSpeed = 10f;
+
+    [Header("Límites de Movimiento (Delimitación)")]
+    [Tooltip("Impide que el objeto salga de los bordes visibles de la pantalla.")]
+    [SerializeField] private bool clampToScreenBounds = true;
+
+    [Tooltip("Margen de separación respecto a los bordes de la pantalla.")]
+    [Range(0.02f, 0.3f)]
+    [SerializeField] private float screenMargin = 0.08f;
+
+    [Tooltip("Activar límites manuales fijos en coordenadas X / Y del mundo.")]
+    [SerializeField] private bool useManualWorldLimits = false;
+    [SerializeField] private Vector2 minWorldBounds = new Vector2(-6f, -3.5f);
+    [SerializeField] private Vector2 maxWorldBounds = new Vector2(6f, 3.5f);
 
     [Header("Efectos Visuales durante el Arrastre")]
     [Tooltip("Escala multiplicadora aplicada mientras se sostiene el objeto.")]
@@ -173,6 +187,7 @@ public class DragDropSprite : MonoBehaviour
         if (targetCamera == null) targetCamera = Camera.main;
         if (targetCamera == null) return;
 
+        StopAllCoroutines(); // Detener cualquier retorno pendiente
         screenPoint = targetCamera.WorldToScreenPoint(transform.position);
         Vector3 mouseScreen = GetPointerScreenPosition();
         mouseScreen.z = screenPoint.z;
@@ -202,6 +217,22 @@ public class DragDropSprite : MonoBehaviour
         mouseScreen.z = screenPoint.z;
         Vector3 newWorldPos = targetCamera.ScreenToWorldPoint(mouseScreen) + mouseOffset;
 
+        // 1. Aplicar límite de bordes de pantalla
+        if (clampToScreenBounds)
+        {
+            Vector3 vp = targetCamera.WorldToViewportPoint(newWorldPos);
+            vp.x = Mathf.Clamp(vp.x, screenMargin, 1f - screenMargin);
+            vp.y = Mathf.Clamp(vp.y, screenMargin, 1f - screenMargin);
+            newWorldPos = targetCamera.ViewportToWorldPoint(vp);
+        }
+
+        // 2. Aplicar límites manuales de coordenadas mundiales si están habilitados
+        if (useManualWorldLimits)
+        {
+            newWorldPos.x = Mathf.Clamp(newWorldPos.x, minWorldBounds.x, maxWorldBounds.x);
+            newWorldPos.y = Mathf.Clamp(newWorldPos.y, minWorldBounds.y, maxWorldBounds.y);
+        }
+
         transform.position = newWorldPos;
     }
 
@@ -227,7 +258,7 @@ public class DragDropSprite : MonoBehaviour
         onEndDragEvent?.Invoke();
     }
 
-    // Callbacks nativos de Unity (compatibilidad adicional)
+    // Callbacks nativos de Unity (compatibilidad cruzada)
     private void OnMouseDown()
     {
         StartDrag();
