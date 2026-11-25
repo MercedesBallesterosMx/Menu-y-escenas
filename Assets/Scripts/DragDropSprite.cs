@@ -5,31 +5,31 @@ using UnityEngine.Events;
 
 /// <summary>
 /// Optativa: Diseño de juegos II - Unidad 2
-/// Actividad 2.3. Programación de botones
+/// Actividad 2.3. Programación de botones y arrastre
 /// Estudiante: Mercedes de Jesús Ballesteros Chávez (Código: 226300438)
 /// 
 /// Script: DragDropSprite.cs
-/// Responsabilidad: Permitir el arrastre funcional de sprites 2D en el espacio de juego
-/// mediante eventos de ratón, cálculo de offset y retorno a posición original o encaje en zonas.
+/// Responsabilidad: Permitir el arrastre funcional de objetos (Sprites 2D y Cubos/Objetos 3D)
+/// mediante eventos de ratón (OnMouseDown, OnMouseDrag, OnMouseUp), cálculo de profundidad
+/// de pantalla y retorno opcional a posición inicial.
 /// </summary>
-[RequireComponent(typeof(Collider2D))]
 public class DragDropSprite : MonoBehaviour
 {
     [Header("Configuración de Arrastre")]
-    [Tooltip("Cámara utilizada para calcular las coordenadas mundiales. Si es nula, se usa Camera.main.")]
+    [Tooltip("Cámara utilizada para calcular las coordenadas. Si es nula, se usa Camera.main.")]
     [SerializeField] private Camera targetCamera;
 
-    [Tooltip("Indica si el sprite debe retornar a su posición inicial al soltarlo.")]
+    [Tooltip("Indica si el objeto debe retornar a su posición inicial al soltarlo.")]
     [SerializeField] private bool returnToOriginOnRelease = false;
 
     [Tooltip("Velocidad de interpolación de movimiento hacia la posición inicial.")]
     [SerializeField] private float returnSpeed = 10f;
 
     [Header("Efectos Visuales durante el Arrastre")]
-    [Tooltip("Escala multiplicadora aplicada mientras se sostiene el sprite.")]
+    [Tooltip("Escala multiplicadora aplicada mientras se sostiene el objeto.")]
     [SerializeField] private float dragScaleMultiplier = 1.15f;
 
-    [Tooltip("Orden de renderizado (sorting order) durante el arrastre para evitar solapamientos.")]
+    [Tooltip("Orden de renderizado (sorting order) durante el arrastre (solo para Sprites 2D).")]
     [SerializeField] private int dragSortingOrder = 50;
 
     [Header("Eventos de Interacción")]
@@ -39,10 +39,13 @@ public class DragDropSprite : MonoBehaviour
     // Variables internas
     private Vector3 initialPosition;
     private Vector3 initialScale;
+    private Vector3 screenPoint;
     private Vector3 mouseOffset;
     private bool isDragging = false;
     private SpriteRenderer spriteRenderer;
     private int originalSortingOrder;
+    private Rigidbody rb3D;
+    private Rigidbody2D rb2D;
 
     private void Awake()
     {
@@ -57,20 +60,31 @@ public class DragDropSprite : MonoBehaviour
             originalSortingOrder = spriteRenderer.sortingOrder;
         }
 
+        rb3D = GetComponent<Rigidbody>();
+        rb2D = GetComponent<Rigidbody2D>();
+
         initialPosition = transform.position;
         initialScale = transform.localScale;
     }
 
     private void OnMouseDown()
     {
-        // Calcular el desplazamiento relativo entre el cursor y el centro del sprite
-        Vector3 mouseWorldPos = GetMouseWorldPosition();
-        mouseOffset = transform.position - mouseWorldPos;
-        mouseOffset.z = 0f; // Mantener la profundidad bidimensional
+        if (targetCamera == null) targetCamera = Camera.main;
+        if (targetCamera == null) return;
+
+        // Calcular profundidad de pantalla del objeto
+        screenPoint = targetCamera.WorldToScreenPoint(transform.position);
+
+        // Calcular offset exacto entre el clic del ratón y el centro del objeto
+        Vector3 curScreenPos = new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z);
+        mouseOffset = transform.position - targetCamera.ScreenToWorldPoint(curScreenPos);
 
         isDragging = true;
 
-        // Feedback visual al iniciar arrastre
+        // Si tiene físicas, desactivar temporalmente cinemática para arrastrar con libertad
+        if (rb3D != null) rb3D.isKinematic = true;
+        if (rb2D != null) rb2D.bodyType = RigidbodyType2D.Kinematic;
+
         transform.localScale = initialScale * dragScaleMultiplier;
         if (spriteRenderer != null)
         {
@@ -83,17 +97,18 @@ public class DragDropSprite : MonoBehaviour
     private void OnMouseDrag()
     {
         if (!isDragging) return;
+        if (targetCamera == null) targetCamera = Camera.main;
+        if (targetCamera == null) return;
 
-        // Actualizar la posición del objeto siguiendo el cursor
-        Vector3 currentMousePos = GetMouseWorldPosition();
-        Vector3 targetPos = currentMousePos + mouseOffset;
-        targetPos.z = initialPosition.z; // Respetar la capa z
+        Vector3 curScreenPoint = new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z);
+        Vector3 curPosition = targetCamera.ScreenToWorldPoint(curScreenPoint) + mouseOffset;
 
-        transform.position = targetPos;
+        transform.position = curPosition;
     }
 
     private void OnMouseUp()
     {
+        if (!isDragging) return;
         isDragging = false;
 
         // Restaurar escala y orden de dibujo
@@ -103,6 +118,10 @@ public class DragDropSprite : MonoBehaviour
             spriteRenderer.sortingOrder = originalSortingOrder;
         }
 
+        // Restaurar físicas si tenía
+        if (rb3D != null) rb3D.isKinematic = false;
+        if (rb2D != null) rb2D.bodyType = RigidbodyType2D.Dynamic;
+
         if (returnToOriginOnRelease)
         {
             StartCoroutine(SmoothReturnRoutine());
@@ -111,19 +130,6 @@ public class DragDropSprite : MonoBehaviour
         onEndDragEvent?.Invoke();
     }
 
-    /// <summary>
-    /// Convierte la posición de la pantalla del cursor en coordenadas del mundo 2D.
-    /// </summary>
-    private Vector3 GetMouseWorldPosition()
-    {
-        Vector3 screenPoint = Input.mousePosition;
-        screenPoint.z = Mathf.Abs(targetCamera.transform.position.z - transform.position.z);
-        return targetCamera.ScreenToWorldPoint(screenPoint);
-    }
-
-    /// <summary>
-    /// Corrutina para interpolar el regreso suave del sprite a su posición de origen.
-    /// </summary>
     private IEnumerator SmoothReturnRoutine()
     {
         while (Vector3.Distance(transform.position, initialPosition) > 0.01f)
@@ -134,17 +140,10 @@ public class DragDropSprite : MonoBehaviour
         transform.position = initialPosition;
     }
 
-    /// <summary>
-    /// Permite reiniciar la posición del sprite de forma manual (vinculable a un botón de la interfaz UI).
-    /// </summary>
     public void ResetToInitialPosition()
     {
         StopAllCoroutines();
         transform.position = initialPosition;
         transform.localScale = initialScale;
-        if (spriteRenderer != null)
-        {
-            spriteRenderer.sortingOrder = originalSortingOrder;
-        }
     }
 }
