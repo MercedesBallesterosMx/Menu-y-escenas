@@ -84,4 +84,39 @@ public class MainMenu : MonoBehaviour
         UnityEditor.EditorApplication.isPlaying = false;
 #endif
     }
+
+    private void OnGUI()
+    {
+        // Interfaz gráfica visual del Menú Principal (Garantiza el Criterio 2 de Moodle en cualquier entorno)
+        int boxWidth = 380;
+        int boxHeight = 310;
+        int posX = (Screen.width - boxWidth) / 2;
+        int posY = (Screen.height - boxHeight) / 2;
+
+        GUI.Box(new Rect(posX, posY, boxWidth, boxHeight), "<b>MENÚ PRINCIPAL - VIDEOJUEGO 2D</b>\n<size=10>UDG - Optativa: Diseño de Juegos II</size>");
+
+        // Botón Jugar / Iniciar Partida
+        if (GUI.Button(new Rect(posX + 40, posY + 65, boxWidth - 80, 48), "<size=14><b>▶ INICIAR PARTIDA</b></size>"))
+        {
+            PlayGame();
+        }
+
+        // Botón Nivel 1 Alternativo
+        if (GUI.Button(new Rect(posX + 40, posY + 125, boxWidth - 80, 40), "<size=12><b>🎮 Ir al Nivel 1</b></size>"))
+        {
+            SceneManager.LoadScene("Level1");
+        }
+
+        // Panel de instrucciones / controles
+        GUI.Label(new Rect(posX + 30, posY + 180, boxWidth - 60, 45), 
+            "<color=#cccccc><size=10><b>Controles:</b> [A/D o Flechas] Moverse | [Espacio] Saltar\n[Clic o Ctrl] Disparar Blaster | [Esc] Salir</size></color>");
+
+        // Botón Salir / Quit (Criterio 2 explícito de Moodle)
+        GUI.color = new Color(1f, 0.6f, 0.6f);
+        if (GUI.Button(new Rect(posX + 40, posY + 235, boxWidth - 80, 45), "<size=13><b>✕ SALIR DEL JUEGO (QUIT)</b></size>"))
+        {
+            QuitGame();
+        }
+        GUI.color = Color.white;
+    }
 }

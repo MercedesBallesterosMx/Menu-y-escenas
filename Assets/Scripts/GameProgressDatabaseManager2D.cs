@@ -162,9 +162,25 @@ public class GameProgressDatabaseManager2D : MonoBehaviour
         }
     }
 
+    private void Update()
+    {
+        // Tecla de escape para navegación rápida y cierre (Criterio 2 de Moodle)
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == "MainMenu")
+            {
+                Application.Quit();
+            }
+            else
+            {
+                UnityEngine.SceneManagement.SceneManager.LoadScene("MainMenu");
+            }
+        }
+    }
+
     private void OnGUI()
     {
-        // Panel visual HUD en pantalla para la Actividad 3.8 (Criterio 1: Visualización y Recolección en tiempo real)
+        // Panel visual HUD en pantalla para la Actividad 3.8 y 3.9 (Criterios 1 y 2 de Moodle)
         var oldBoxFontSize = GUI.skin.box.fontSize;
         var oldLabelFontSize = GUI.skin.label.fontSize;
 
@@ -172,12 +188,26 @@ public class GameProgressDatabaseManager2D : MonoBehaviour
         GUI.skin.label.fontSize = 11;
 
         // Caja de fondo semitransparente con borde estético
-        GUI.Box(new Rect(15, 15, 275, 115), "<b>Base de Datos Cloud (Firebase)</b>");
+        GUI.Box(new Rect(15, 15, 275, 150), "<b>Base de Datos Cloud (Firebase)</b>");
 
         GUI.Label(new Rect(25, 40, 255, 22), $"<b>🪙 Monedas:</b> <color=yellow><size=13><b>{currentCoins}</b></size></color>");
         GUI.Label(new Rect(25, 62, 255, 22), $"<b>🏆 Niveles:</b> Nivel 1 [{(isLevel1Completed ? "✓" : "En curso")}] | Nivel 2 [{(isLevel2Completed ? "✓" : "Bloqueado")}]");
         GUI.Label(new Rect(25, 84, 255, 22), $"<b>☁ Estado:</b> <color=#90ee90>{(databaseService != null ? "Sincronizado con Firestore" : "Persistencia Local")}</color>");
         GUI.Label(new Rect(25, 102, 255, 20), $"<size=9><color=#cccccc>Jugador: {databaseService?.PlayerId ?? "player_mercedes_226300438"}</color></size>");
+
+        // Botones de navegación y cierre autónomo (Criterio 2 de Moodle)
+        if (GUI.Button(new Rect(25, 126, 125, 26), "<size=10><b>🏠 Menú Principal</b></size>"))
+        {
+            UnityEngine.SceneManagement.SceneManager.LoadScene("MainMenu");
+        }
+        if (GUI.Button(new Rect(155, 126, 125, 26), "<size=10><b>✕ Salir (Quit)</b></size>"))
+        {
+            CommitProgressToDatabase();
+            Application.Quit();
+#if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+#endif
+        }
 
         GUI.skin.box.fontSize = oldBoxFontSize;
         GUI.skin.label.fontSize = oldLabelFontSize;
