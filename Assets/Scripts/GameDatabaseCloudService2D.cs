@@ -41,9 +41,16 @@ public class GameDatabaseCloudService2D : MonoBehaviour
     [Tooltip("Colección en la base de datos Firestore donde se almacenan las partidas.")]
     [SerializeField] private string collectionName = "player_progress";
 
+    [Tooltip("ID único del jugador en la base de datos.")]
+    [SerializeField] private string activePlayerId = "player_mercedes_226300438";
+
     [Header("Configuración de Caché Local Persistente")]
     [Tooltip("Nombre del archivo local de respaldo de la base de datos.")]
     [SerializeField] private string localDatabaseFileName = "game_firestore_database.json";
+
+    public string ProjectId { get => firestoreProjectId; set => firestoreProjectId = value; }
+    public string CollectionName => collectionName;
+    public string PlayerId => activePlayerId;
 
     private string LocalFilePath => Path.Combine(Application.persistentDataPath, localDatabaseFileName);
 

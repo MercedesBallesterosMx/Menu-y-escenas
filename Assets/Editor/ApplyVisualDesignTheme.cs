@@ -179,6 +179,9 @@ public class ApplyVisualDesignTheme
                 }
             }
 
+            // E) Monedas y Base de Datos (Actividad 3.8)
+            SetupDatabaseConnection3_8.SetupSceneAndDatabase();
+
             EditorSceneManager.SaveScene(scene);
             Debug.Log("[Diseño Visual 2D] Escena MainScene2D estilizada con éxito (Héroe, Fondo, Plataformas de Pasto/Madera y Proyectil de Plasma).");
         }

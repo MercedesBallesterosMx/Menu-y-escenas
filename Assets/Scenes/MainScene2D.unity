@@ -733,6 +733,7 @@ GameObject:
   - component: {fileID: 1953851069}
   - component: {fileID: 1953851070}
   - component: {fileID: 1953851071}
+  - component: {fileID: 1953851072}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -1036,6 +1037,23 @@ MonoBehaviour:
   onDirectionFlipped:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &1953851072
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1953851061}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72b37c58c6e756d43bda052940c6bcff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerCombatAnimationBridge2D
+  animator: {fileID: 0}
+  weaponShooter: {fileID: 0}
+  speedParam: Speed
+  shootTriggerParam: Shoot
+  fireCooldown: 0.2
 --- !u!1 &2135211468
 GameObject:
   m_ObjectHideFlags: 0
@@ -1224,6 +1242,7 @@ GameObject:
   - component: {fileID: 2139490553}
   - component: {fileID: 2139490554}
   - component: {fileID: 2139490555}
+  - component: {fileID: 2139490556}
   m_Layer: 0
   m_Name: '[Managers]'
   m_TagString: Untagged
@@ -1320,6 +1339,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovementAuditor2D
   player: {fileID: 0}
   movementScript: {fileID: 0}
+--- !u!114 &2139490556
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2139490549}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c4808f216817ab4f917a3303dbdc7f6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BulletMechanicsAuditor2D
+  player: {fileID: 0}
+  bulletPrefab: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

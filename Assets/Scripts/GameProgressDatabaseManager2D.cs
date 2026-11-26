@@ -161,4 +161,25 @@ public class GameProgressDatabaseManager2D : MonoBehaviour
             CommitProgressToDatabase();
         }
     }
+
+    private void OnGUI()
+    {
+        // Panel visual HUD en pantalla para la Actividad 3.8 (Criterio 1: Visualización y Recolección en tiempo real)
+        var oldBoxFontSize = GUI.skin.box.fontSize;
+        var oldLabelFontSize = GUI.skin.label.fontSize;
+
+        GUI.skin.box.fontSize = 12;
+        GUI.skin.label.fontSize = 11;
+
+        // Caja de fondo semitransparente con borde estético
+        GUI.Box(new Rect(15, 15, 275, 115), "<b>Base de Datos Cloud (Firebase)</b>");
+
+        GUI.Label(new Rect(25, 40, 255, 22), $"<b>🪙 Monedas:</b> <color=yellow><size=13><b>{currentCoins}</b></size></color>");
+        GUI.Label(new Rect(25, 62, 255, 22), $"<b>🏆 Niveles:</b> Nivel 1 [{(isLevel1Completed ? "✓" : "En curso")}] | Nivel 2 [{(isLevel2Completed ? "✓" : "Bloqueado")}]");
+        GUI.Label(new Rect(25, 84, 255, 22), $"<b>☁ Estado:</b> <color=#90ee90>{(databaseService != null ? "Sincronizado con Firestore" : "Persistencia Local")}</color>");
+        GUI.Label(new Rect(25, 102, 255, 20), $"<size=9><color=#cccccc>Jugador: {databaseService?.PlayerId ?? "player_mercedes_226300438"}</color></size>");
+
+        GUI.skin.box.fontSize = oldBoxFontSize;
+        GUI.skin.label.fontSize = oldLabelFontSize;
+    }
 }
