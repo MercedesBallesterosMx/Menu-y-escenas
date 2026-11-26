@@ -87,7 +87,12 @@ public class MainMenu : MonoBehaviour
 
     private void OnGUI()
     {
-        // Interfaz gráfica visual del Menú Principal (Garantiza el Criterio 2 de Moodle en cualquier entorno)
+        // Si el menú original de flores (Canvas) está activo, no sobreponer cajas OnGUI
+        if (mainMenu != null && mainMenu.activeInHierarchy) return;
+        Canvas activeCanvas = FindAnyObjectByType<Canvas>();
+        if (activeCanvas != null && activeCanvas.isActiveAndEnabled) return;
+
+        // Fallback visual en caso de que no exista Canvas
         int boxWidth = 380;
         int boxHeight = 310;
         int posX = (Screen.width - boxWidth) / 2;

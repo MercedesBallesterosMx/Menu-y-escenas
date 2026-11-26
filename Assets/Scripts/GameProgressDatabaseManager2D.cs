@@ -196,17 +196,15 @@ public class GameProgressDatabaseManager2D : MonoBehaviour
         GUI.Label(new Rect(25, 102, 255, 20), $"<size=9><color=#cccccc>Jugador: {databaseService?.PlayerId ?? "player_mercedes_226300438"}</color></size>");
 
         // Botones de navegación y cierre autónomo (Criterio 2 de Moodle)
-        if (GUI.Button(new Rect(25, 126, 125, 26), "<size=10><b>🏠 Menú Principal</b></size>"))
-        {
-            UnityEngine.SceneManagement.SceneManager.LoadScene("MainMenu");
-        }
-        if (GUI.Button(new Rect(155, 126, 125, 26), "<size=10><b>✕ Salir (Quit)</b></size>"))
+        if (GUI.Button(new Rect(25, 126, 125, 26), "<size=10><b>🏠 Menú Flores</b></size>"))
         {
             CommitProgressToDatabase();
-            Application.Quit();
-#if UNITY_EDITOR
-            UnityEditor.EditorApplication.isPlaying = false;
-#endif
+            UnityEngine.SceneManagement.SceneManager.LoadScene("MainMenu");
+        }
+        if (GUI.Button(new Rect(155, 126, 125, 26), "<size=10><b>✕ Salir al Menú (Quit)</b></size>"))
+        {
+            CommitProgressToDatabase();
+            UnityEngine.SceneManagement.SceneManager.LoadScene("MainMenu");
         }
 
         GUI.skin.box.fontSize = oldBoxFontSize;

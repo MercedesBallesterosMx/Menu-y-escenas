@@ -179,8 +179,8 @@ public class ApplyVisualDesignTheme
                 }
             }
 
-            // E) Monedas y Base de Datos (Actividad 3.8)
-            SetupDatabaseConnection3_8.SetupSceneAndDatabase();
+            // E) Recorrido Ampliado del Nivel (Múltiples Pantallas) y Monedas (Actividades 3.8 y 3.9)
+            SetupExtendedLevelJourney.ExpandLevel();
 
             EditorSceneManager.SaveScene(scene);
             Debug.Log("[Diseño Visual 2D] Escena MainScene2D estilizada con éxito (Héroe, Fondo, Plataformas de Pasto/Madera y Proyectil de Plasma).");
