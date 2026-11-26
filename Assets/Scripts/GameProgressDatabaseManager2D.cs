@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
+#if ENABLE_INPUT_SYSTEM
+using UnityEngine.InputSystem;
+#endif
+
 /// <summary>
 /// Optativa: Diseño de juegos II - Unidad 3: Desarrollo de videojuegos 2D
 /// Actividad 3.8. La conexión a base de datos
@@ -164,15 +168,32 @@ public class GameProgressDatabaseManager2D : MonoBehaviour
 
     private void Update()
     {
-        // Tecla de escape para navegación rápida y cierre (Criterio 2 de Moodle)
+        bool escapePressed = false;
+
+#if ENABLE_INPUT_SYSTEM
+        if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
+        {
+            escapePressed = true;
+        }
+#endif
+#if ENABLE_LEGACY_INPUT_MANAGER
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == "MainMenu")
+            escapePressed = true;
+        }
+#endif
+
+        // Tecla de escape para navegación rápida y cierre (Criterio 2 de Moodle)
+        if (escapePressed)
+        {
+            string activeScene = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+            if (activeScene == "MainMenu" || string.IsNullOrEmpty(activeScene))
             {
                 Application.Quit();
             }
             else
             {
+                CommitProgressToDatabase();
                 UnityEngine.SceneManagement.SceneManager.LoadScene("MainMenu");
             }
         }
@@ -180,8 +201,9 @@ public class GameProgressDatabaseManager2D : MonoBehaviour
 
     private void OnGUI()
     {
-        // En el menú principal no mostrar el HUD del juego
-        if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == "MainMenu") return;
+        // En el menú principal nunca mostrar ningún HUD ni caja
+        string activeScene = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+        if (string.IsNullOrEmpty(activeScene) || activeScene == "MainMenu" || activeScene.Contains("Menu")) return;
 
         // HUD compacto, discreto y elegante en la esquina superior izquierda
         var oldBoxFontSize = GUI.skin.box.fontSize;

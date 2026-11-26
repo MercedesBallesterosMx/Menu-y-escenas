@@ -16,9 +16,8 @@ public static class BuildGameStandalone3_9
         {
             if (EditorApplication.isPlayingOrWillChangePlaymode) return;
             string exePath = "Builds/Windows/Videojuego2D_MercedesBallesteros.exe";
-            if (!File.Exists(exePath) && !SessionState.GetBool("AutoBuild3_9_Executed", false))
+            if (!File.Exists(exePath))
             {
-                SessionState.SetBool("AutoBuild3_9_Executed", true);
                 BuildStandaloneWindowsPlayer();
             }
         };
