@@ -65,10 +65,17 @@ public class PlayerCombatAnimationBridge2D : MonoBehaviour
     {
         nextFireTime = Time.time + fireCooldown;
 
-        // Disparar animación en Mecanim (Criterio 3: Estado funcional 'Shoot')
+        // Disparar animación en Mecanim si el parámetro 'Shoot' está definido
         if (animator != null && animator.runtimeAnimatorController != null)
         {
-            animator.SetTrigger(shootTriggerParam);
+            foreach (var param in animator.parameters)
+            {
+                if (param.name == shootTriggerParam && param.type == AnimatorControllerParameterType.Trigger)
+                {
+                    animator.SetTrigger(shootTriggerParam);
+                    break;
+                }
+            }
         }
 
         // Disparar proyectil físico mediante el sistema balístico
@@ -88,7 +95,9 @@ public class PlayerCombatAnimationBridge2D : MonoBehaviour
 #if ENABLE_INPUT_SYSTEM
         if (Keyboard.current != null)
         {
-            if (Keyboard.current.fKey.wasPressedThisFrame || Keyboard.current.jKey.wasPressedThisFrame)
+            if (Keyboard.current.fKey.wasPressedThisFrame ||
+                Keyboard.current.jKey.wasPressedThisFrame ||
+                Keyboard.current.leftCtrlKey.wasPressedThisFrame)
             {
                 return true;
             }
@@ -99,7 +108,7 @@ public class PlayerCombatAnimationBridge2D : MonoBehaviour
         }
 #endif
 #if ENABLE_LEGACY_INPUT_MANAGER
-        if (Input.GetKeyDown(KeyCode.F) || Input.GetKeyDown(KeyCode.J) || Input.GetButtonDown("Fire1"))
+        if (Input.GetKeyDown(KeyCode.F) || Input.GetKeyDown(KeyCode.J) || Input.GetKeyDown(KeyCode.LeftControl) || Input.GetButtonDown("Fire1"))
         {
             return true;
         }

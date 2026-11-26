@@ -44,6 +44,13 @@ public class BulletProjectile2D : MonoBehaviour
         rb2D.gravityScale = 0f; // Vuelo rectilíneo sin caída prematura
         rb2D.collisionDetectionMode = CollisionDetectionMode2D.Continuous; // Evita atravesar paredes delgadas
         col2D.isTrigger = true; // Permite atravesar zonas de disparo sin trabar al personaje
+
+        SpriteRenderer sr = GetComponent<SpriteRenderer>();
+        if (sr != null)
+        {
+            sr.sortingOrder = 30;
+            sr.color = Color.white;
+        }
     }
 
     private void Start()
@@ -86,8 +93,8 @@ public class BulletProjectile2D : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        // Ignorar colisiones con el personaje que disparó la bala
-        if (collision.CompareTag("Player") || collision.isTrigger)
+        // Ignorar colisiones con el personaje que disparó la bala o triggers (monedas, abismos, etc.)
+        if (collision.CompareTag("Player") || collision.name.Contains("Player") || collision.isTrigger || collision.CompareTag("Coin") || collision.name.Contains("Coin") || collision.name.Contains("Abyss"))
         {
             return;
         }

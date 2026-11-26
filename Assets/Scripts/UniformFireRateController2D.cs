@@ -132,15 +132,21 @@ public class UniformFireRateController2D : MonoBehaviour
         consecutiveShotsCount++;
 
         // 1. Determinar orientación del disparo
-        Vector2 shootDirection = Vector2.right;
-        if (playerController != null)
+        float dirX = 1f;
+        AdvancedPlayerMovement2D apm = GetComponent<AdvancedPlayerMovement2D>();
+        if (apm != null)
         {
-            shootDirection = playerController.IsFacingRight ? Vector2.right : Vector2.left;
+            dirX = apm.FacingRight ? 1f : -1f;
         }
-        else
+        else if (playerController != null)
         {
-            shootDirection = transform.localScale.x >= 0 ? Vector2.right : Vector2.left;
+            dirX = playerController.IsFacingRight ? 1f : -1f;
         }
+        else if (transform.localScale.x < 0f)
+        {
+            dirX = -1f;
+        }
+        Vector2 shootDirection = new Vector2(dirX, 0f);
 
         // 2. Instanciar proyectil si existe prefab
         if (missilePrefab != null)

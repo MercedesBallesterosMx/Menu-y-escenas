@@ -181,6 +181,13 @@ public class AdvancedPlayerMovement2D : MonoBehaviour
             spriteRenderer.flipX = false; // Mantener siempre flipX en false para evitar doble inversión
         }
 
+        // Mantener PlayerController2D perfectamente sincronizado
+        PlayerController2D pc = GetComponent<PlayerController2D>();
+        if (pc != null)
+        {
+            pc.SetFacingRight(lookRight);
+        }
+
         onDirectionFlipped?.Invoke(facingRight);
         Debug.Log($"[AdvancedPlayerMovement2D] Orientación actualizada: {(facingRight ? "Derecha (+X)" : "Izquierda (-X)")}");
     }

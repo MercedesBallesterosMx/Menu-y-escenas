@@ -60,10 +60,9 @@ public class PlayerWeaponShooter2D : MonoBehaviour
 
     private void Update()
     {
-        // 1. Detectar evento de teclado para disparar (Tecla F, J o Ctrl Izquierdo)
+        // 1. Detectar evento de teclado para disparar (Tecla F, J, Clic izquierdo o Ctrl Izquierdo)
         if (IsFireKeyPressed() && Time.time >= nextFireTime)
         {
-            nextFireTime = Time.time + fireRate;
             Shoot();
         }
     }
@@ -82,6 +81,10 @@ public class PlayerWeaponShooter2D : MonoBehaviour
             {
                 return true;
             }
+        }
+        if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
+        {
+            return true;
         }
 #endif
 #if ENABLE_LEGACY_INPUT_MANAGER
@@ -104,16 +107,22 @@ public class PlayerWeaponShooter2D : MonoBehaviour
             return;
         }
 
-        if (firePoint == null)
-        {
-            firePoint = transform;
-        }
+        // Actualizar cooldown interno para evitar ráfagas descontroladas o llamadas dobles en el mismo frame
+        nextFireTime = Time.time + fireRate;
 
         // 1. Determinar el sentido hacia donde mira el personaje (Derecha = +1, Izquierda = -1)
         float directionX = 1f;
 
-        // Comprobación por escala local o referencia del controlador
-        if (transform.localScale.x < 0)
+        AdvancedPlayerMovement2D apm = GetComponent<AdvancedPlayerMovement2D>();
+        if (apm != null)
+        {
+            directionX = apm.FacingRight ? 1f : -1f;
+        }
+        else if (playerController != null)
+        {
+            directionX = playerController.IsFacingRight ? 1f : -1f;
+        }
+        else if (transform.localScale.x < 0f)
         {
             directionX = -1f;
         }
@@ -128,28 +137,84 @@ public class PlayerWeaponShooter2D : MonoBehaviour
 
         Vector2 shootDirection = new Vector2(directionX, 0f);
 
-        // 2. Ajustar la posición mundial del FirePoint según el frente
-        Vector3 spawnPosition = firePoint.position;
-        // Si el personaje se volteó por flipX y el firePoint no es hijo invertido, ajustar offset
-        if (directionX < 0 && firePoint.localPosition.x > 0)
+        // 2. Calcular posición de spawn segura (garantizar que quede frente al jugador y no dentro de su collider)
+        float spawnOffsetX = 0.95f;
+        if (firePoint != null)
         {
-            spawnPosition.x = transform.position.x - Mathf.Abs(firePoint.localPosition.x);
+            spawnOffsetX = Mathf.Max(0.85f, Mathf.Abs(firePoint.localPosition.x * Mathf.Abs(transform.localScale.x)));
         }
+
+        float spawnOffsetY = defaultFirePointOffset.y;
+        if (firePoint != null)
+        {
+            spawnOffsetY = firePoint.localPosition.y * Mathf.Abs(transform.localScale.y);
+        }
+
+        Vector3 spawnPosition = transform.position + new Vector3(directionX * spawnOffsetX, spawnOffsetY, 0f);
 
         // 3. Instanciar el Prefab de la bala
         GameObject bulletObj = Instantiate(bulletPrefab, spawnPosition, Quaternion.identity);
 
-        // 4. Configurar el vector de dirección en el script del proyectil
+        // Prevenir colisiones entre la bala recién nacida y el propio jugador
+        Collider2D playerCollider = GetComponent<Collider2D>();
+        Collider2D bulletCollider = bulletObj.GetComponent<Collider2D>();
+        if (playerCollider != null && bulletCollider != null)
+        {
+            Physics2D.IgnoreCollision(playerCollider, bulletCollider, true);
+        }
+
+        // 4. Configurar el vector de dirección en TODOS los scripts del proyectil
         BulletProjectile2D projectile = bulletObj.GetComponent<BulletProjectile2D>();
         if (projectile != null)
         {
             projectile.SetDirection(shootDirection);
         }
 
+        BulletMovementController2D bmc = bulletObj.GetComponent<BulletMovementController2D>();
+        if (bmc != null)
+        {
+            bmc.SetDirection(shootDirection);
+        }
+
+        MissileActionEffects2D mae = bulletObj.GetComponent<MissileActionEffects2D>();
+        if (mae != null)
+        {
+            mae.InitializeTrajectory(shootDirection, 16.0f);
+        }
+
         totalBulletsFired++;
         Debug.Log($"[PlayerWeaponShooter2D] Disparo #{totalBulletsFired} ejecutado desde punto alineado {spawnPosition} hacia {shootDirection}.");
 
+        // Efecto visual instantáneo de destello de cañón (Muzzle Flash)
+        StartCoroutine(ShowMuzzleFlash(spawnPosition, directionX));
+
         onShootEvent?.Invoke();
+    }
+
+    private IEnumerator ShowMuzzleFlash(Vector3 position, float directionX)
+    {
+        GameObject flash = new GameObject("MuzzleFlash_FX");
+        flash.transform.position = position;
+        flash.transform.localScale = new Vector3(directionX * 1.0f, 1.0f, 1.0f);
+
+        SpriteRenderer sr = flash.AddComponent<SpriteRenderer>();
+        sr.sortingOrder = 35;
+        sr.color = new Color(0.2f, 0.95f, 1f, 1f);
+
+        if (bulletPrefab != null)
+        {
+            SpriteRenderer bulletSr = bulletPrefab.GetComponent<SpriteRenderer>();
+            if (bulletSr != null && bulletSr.sprite != null)
+            {
+                sr.sprite = bulletSr.sprite;
+            }
+        }
+
+        yield return new WaitForSeconds(0.06f);
+        if (flash != null)
+        {
+            Destroy(flash);
+        }
     }
 
     private void OnDrawGizmosSelected()

@@ -63,6 +63,47 @@ public class BulletMovementController2D : MonoBehaviour
         {
             impactLayers = LayerMask.GetMask("Default", "Ground", "Piso", "Platforms", "Obstacles");
         }
+
+        // 1. Garantizar visibilidad destacada del Sprite
+        SpriteRenderer sr = GetComponent<SpriteRenderer>();
+        if (sr != null)
+        {
+            sr.sortingOrder = 30;
+            sr.color = Color.white;
+        }
+
+        // 2. Configurar estela brillante (TrailRenderer) para máxima visibilidad
+        TrailRenderer tr = GetComponent<TrailRenderer>();
+        if (tr == null)
+        {
+            tr = gameObject.AddComponent<TrailRenderer>();
+        }
+        if (tr != null)
+        {
+            tr.time = 0.25f;
+            tr.startWidth = 0.32f;
+            tr.endWidth = 0.04f;
+            tr.sortingOrder = 29;
+            Gradient grad = new Gradient();
+            grad.SetKeys(
+                new GradientColorKey[] {
+                    new GradientColorKey(new Color(0.2f, 0.95f, 1f), 0.0f),
+                    new GradientColorKey(new Color(1f, 1f, 1f), 0.4f),
+                    new GradientColorKey(new Color(0f, 0.65f, 1f), 1.0f)
+                },
+                new GradientAlphaKey[] {
+                    new GradientAlphaKey(1.0f, 0.0f),
+                    new GradientAlphaKey(0.85f, 0.5f),
+                    new GradientAlphaKey(0.0f, 1.0f)
+                }
+            );
+            tr.colorGradient = grad;
+            Shader s = Shader.Find("Sprites/Default");
+            if (s != null)
+            {
+                tr.material = new Material(s);
+            }
+        }
     }
 
     private void Start()
@@ -113,8 +154,8 @@ public class BulletMovementController2D : MonoBehaviour
     {
         if (hasImpacted) return;
 
-        // Ignorar colisiones con el propio jugador
-        if (collision.CompareTag("Player") || collision.name.Contains("Player"))
+        // Ignorar colisiones con el propio jugador o triggers de la escena (monedas, abismos, etc.)
+        if (collision.CompareTag("Player") || collision.name.Contains("Player") || collision.isTrigger || collision.CompareTag("Coin") || collision.name.Contains("Coin") || collision.name.Contains("Abyss"))
         {
             return;
         }
