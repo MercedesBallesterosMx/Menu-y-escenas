@@ -23,7 +23,7 @@ public class PlayerController2D : MonoBehaviour
 {
     [Header("Parámetros de Movimiento Horizontal")]
     [Tooltip("Velocidad de desplazamiento lateral del personaje.")]
-    [SerializeField] private float moveSpeed = 7.0f;
+    [SerializeField] private float moveSpeed = 8.5f;
 
     [Tooltip("Suavizado de aceleración lateral (SmoothDamp).")]
     [Range(0.01f, 0.2f)]
@@ -31,7 +31,7 @@ public class PlayerController2D : MonoBehaviour
 
     [Header("Parámetros de Salto y Físicas")]
     [Tooltip("Fuerza de impulso vertical aplicada en el salto.")]
-    [SerializeField] private float jumpForce = 12.0f;
+    [SerializeField] private float jumpForce = 16.5f;
 
     [Tooltip("Capa que define el suelo para permitir el salto.")]
     [SerializeField] private LayerMask groundLayer;
@@ -206,13 +206,18 @@ public class PlayerController2D : MonoBehaviour
     /// </summary>
     private void ApplyJump()
     {
+        // Si PlatformerPhysicsMechanics2D está en el objeto, él gobierna el salto avanzado
+        if (GetComponent<PlatformerPhysicsMechanics2D>() != null)
+        {
+            return;
+        }
+
         if (jumpRequested)
         {
             jumpRequested = false;
 
             if (isGrounded)
             {
-                // Cancelar velocidad vertical previa para consistencia en el impulso
                 rb2D.linearVelocity = new Vector2(rb2D.linearVelocity.x, 0f);
                 rb2D.AddForce(new Vector2(0f, jumpForce), ForceMode2D.Impulse);
                 isGrounded = false;

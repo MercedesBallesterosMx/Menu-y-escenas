@@ -25,24 +25,30 @@ using UnityEngine.InputSystem;
 public class PlatformerPhysicsMechanics2D : MonoBehaviour
 {
     [Header("1. Configuración de Gravedad y Físicas")]
-    [Tooltip("Escala de gravedad personalizada en el Rigidbody2D para evitar sensación de flotabilidad.")]
-    [SerializeField] private float baseGravityScale = 2.8f;
+    [Tooltip("Escala de gravedad personalizada en el Rigidbody2D.")]
+    [SerializeField] private float baseGravityScale = 2.2f;
 
     [Tooltip("Multiplicador de gravedad aplicado durante el descenso (caída) para mayor contundencia.")]
-    [SerializeField] private float fallGravityMultiplier = 2.4f;
+    [SerializeField] private float fallGravityMultiplier = 1.6f;
 
-    [Tooltip("Multiplicador de gravedad si el jugador suelta la tecla de salto antes del punto cúspide (salto corto).")]
-    [SerializeField] private float lowJumpMultiplier = 2.0f;
+    [Tooltip("Multiplicador de gravedad si el jugador suelta la tecla de salto antes del punto cúspide.")]
+    [SerializeField] private float lowJumpMultiplier = 1.25f;
 
     [Header("2. Parámetros de Salto e Impulso")]
-    [Tooltip("Fuerza del impulso vertical aplicada en el despegue.")]
-    [SerializeField] private float jumpForce = 13.5f;
+    [Tooltip("Fuerza del impulso vertical aplicada en el despegue (Calibrado para salto alto y amplio).")]
+    [SerializeField] private float jumpForce = 16.5f;
+
+    [Tooltip("Permitir doble salto en el aire para superar plataformas altas y abismos.")]
+    [SerializeField] private bool allowDoubleJump = true;
+
+    [Tooltip("Fuerza del impulso del doble salto en el aire.")]
+    [SerializeField] private float doubleJumpForce = 15.0f;
 
     [Tooltip("Tiempo de tolerancia para saltar después de haber dejado el suelo (Coyote Time).")]
-    [SerializeField] private float coyoteTime = 0.12f;
+    [SerializeField] private float coyoteTime = 0.15f;
 
     [Tooltip("Tiempo de tolerancia que almacena una pulsación de salto previa al aterrizaje (Jump Buffer).")]
-    [SerializeField] private float jumpBufferTime = 0.10f;
+    [SerializeField] private float jumpBufferTime = 0.12f;
 
     [Header("3. Detección de Suelo y Colisión")]
     [Tooltip("Transform situado en los pies del personaje para comprobar contacto con plataformas.")]
@@ -70,6 +76,7 @@ public class PlatformerPhysicsMechanics2D : MonoBehaviour
     private float jumpBufferCounter = 0f;
     private bool jumpButtonPressed = false;
     private bool jumpButtonReleased = false;
+    private bool canDoubleJump = false;
 
     // Propiedades públicas para auditoría
     public bool IsGrounded => isGrounded;
@@ -110,17 +117,18 @@ public class PlatformerPhysicsMechanics2D : MonoBehaviour
         // 1. Lectura de hardware de teclado para el evento de salto
         ReadJumpInput();
 
-        // 2. Gestión de Coyote Time (tiempo que sigue pudiendo saltar tras caer de una cornisa)
+        // 2. Gestión de Coyote Time y Doble Salto
         if (isGrounded)
         {
             coyoteTimeCounter = coyoteTime;
+            canDoubleJump = true;
         }
         else
         {
             coyoteTimeCounter -= Time.deltaTime;
         }
 
-        // 3. Gestión de Jump Buffer (almacenar el intento de salto instantes antes de tocar tierra)
+        // 3. Gestión de Jump Buffer
         if (jumpButtonPressed)
         {
             jumpBufferCounter = jumpBufferTime;
@@ -132,9 +140,17 @@ public class PlatformerPhysicsMechanics2D : MonoBehaviour
         }
 
         // 4. Intentar ejecutar el salto si se cumplen las condiciones físicas
-        if (jumpBufferCounter > 0f && coyoteTimeCounter > 0f)
+        if (jumpBufferCounter > 0f)
         {
-            ExecuteJumpImpulse();
+            if (coyoteTimeCounter > 0f)
+            {
+                ExecuteJumpImpulse(jumpForce);
+            }
+            else if (allowDoubleJump && canDoubleJump)
+            {
+                canDoubleJump = false;
+                ExecuteJumpImpulse(doubleJumpForce);
+            }
         }
     }
 
@@ -185,16 +201,16 @@ public class PlatformerPhysicsMechanics2D : MonoBehaviour
     /// <summary>
     /// Ejecuta el impulso físico vertical de salto respetando la masa del Rigidbody2D.
     /// </summary>
-    private void ExecuteJumpImpulse()
+    private void ExecuteJumpImpulse(float force)
     {
         jumpBufferCounter = 0f;
         coyoteTimeCounter = 0f;
 
-        // Limpiar velocidad vertical residual para salto uniforme
-        rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
+        // Limpiar velocidad vertical residual para salto uniforme y ágil
+        rb.linearVelocity = new Vector2(rb.linearVelocity.x, force);
 
         onJumpExecuted?.Invoke();
-        Debug.Log($"[PlatformerPhysicsMechanics2D] Salto ejecutado mediante evento de teclado. Impulso: {jumpForce} m/s.");
+        Debug.Log($"[PlatformerPhysicsMechanics2D] Salto ejecutado con impulso de {force} m/s.");
     }
 
     /// <summary>

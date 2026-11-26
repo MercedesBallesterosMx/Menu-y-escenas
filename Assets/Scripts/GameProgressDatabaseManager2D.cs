@@ -180,28 +180,23 @@ public class GameProgressDatabaseManager2D : MonoBehaviour
 
     private void OnGUI()
     {
-        // Panel visual HUD en pantalla para la Actividad 3.8 y 3.9 (Criterios 1 y 2 de Moodle)
+        // En el menú principal no mostrar el HUD del juego
+        if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == "MainMenu") return;
+
+        // HUD compacto, discreto y elegante en la esquina superior izquierda
         var oldBoxFontSize = GUI.skin.box.fontSize;
         var oldLabelFontSize = GUI.skin.label.fontSize;
 
-        GUI.skin.box.fontSize = 12;
+        GUI.skin.box.fontSize = 11;
         GUI.skin.label.fontSize = 11;
 
-        // Caja de fondo semitransparente con borde estético
-        GUI.Box(new Rect(15, 15, 275, 150), "<b>Base de Datos Cloud (Firebase)</b>");
+        // Tarjeta pequeña de monedas y Firebase (160 x 48 px)
+        GUI.Box(new Rect(10, 10, 160, 48), "");
+        GUI.Label(new Rect(18, 12, 145, 22), $"<b>🪙 Monedas:</b> <color=yellow><size=13><b>{currentCoins}</b></size></color>");
+        GUI.Label(new Rect(18, 32, 145, 18), $"<size=9><color=#90ee90>☁ Firebase: Activo</color></size>");
 
-        GUI.Label(new Rect(25, 40, 255, 22), $"<b>🪙 Monedas:</b> <color=yellow><size=13><b>{currentCoins}</b></size></color>");
-        GUI.Label(new Rect(25, 62, 255, 22), $"<b>🏆 Niveles:</b> Nivel 1 [{(isLevel1Completed ? "✓" : "En curso")}] | Nivel 2 [{(isLevel2Completed ? "✓" : "Bloqueado")}]");
-        GUI.Label(new Rect(25, 84, 255, 22), $"<b>☁ Estado:</b> <color=#90ee90>{(databaseService != null ? "Sincronizado con Firestore" : "Persistencia Local")}</color>");
-        GUI.Label(new Rect(25, 102, 255, 20), $"<size=9><color=#cccccc>Jugador: {databaseService?.PlayerId ?? "player_mercedes_226300438"}</color></size>");
-
-        // Botones de navegación y cierre autónomo (Criterio 2 de Moodle)
-        if (GUI.Button(new Rect(25, 126, 125, 26), "<size=10><b>🏠 Menú Flores</b></size>"))
-        {
-            CommitProgressToDatabase();
-            UnityEngine.SceneManagement.SceneManager.LoadScene("MainMenu");
-        }
-        if (GUI.Button(new Rect(155, 126, 125, 26), "<size=10><b>✕ Salir al Menú (Quit)</b></size>"))
+        // Botón pequeño para regresar al Menú de Flores (110 x 22 px)
+        if (GUI.Button(new Rect(10, 62, 110, 22), "<size=10><b>✕ Menú (Esc)</b></size>"))
         {
             CommitProgressToDatabase();
             UnityEngine.SceneManagement.SceneManager.LoadScene("MainMenu");
