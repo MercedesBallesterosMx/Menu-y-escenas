@@ -4,21 +4,8 @@ using UnityEngine;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 
-[InitializeOnLoad]
 public class SetupPrefabsAndShooter
 {
-    static SetupPrefabsAndShooter()
-    {
-        EditorApplication.delayCall += () =>
-        {
-            if (!SessionState.GetBool("SetupPrefabsExecuted", false))
-            {
-                SessionState.SetBool("SetupPrefabsExecuted", true);
-                ExecuteSetup();
-            }
-        };
-    }
-
     [MenuItem("Tools/Actividad 3.2 - Configurar Prefabs y Disparo")]
     public static void ExecuteSetup()
     {

@@ -4,21 +4,8 @@ using UnityEngine;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 
-[InitializeOnLoad]
 public class SetupCameraConfiguration3_4
 {
-    static SetupCameraConfiguration3_4()
-    {
-        EditorApplication.delayCall += () =>
-        {
-            if (!SessionState.GetBool("Actividad3_4_Configured", false))
-            {
-                SessionState.SetBool("Actividad3_4_Configured", true);
-                ConfigureCamera();
-            }
-        };
-    }
-
     [MenuItem("Tools/Actividad 3.4 - Configurar Cámara 2D y Parallax")]
     public static void ConfigureCamera()
     {

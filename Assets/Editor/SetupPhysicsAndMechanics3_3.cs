@@ -4,21 +4,8 @@ using UnityEngine;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 
-[InitializeOnLoad]
 public class SetupPhysicsAndMechanics3_3
 {
-    static SetupPhysicsAndMechanics3_3()
-    {
-        EditorApplication.delayCall += () =>
-        {
-            if (!SessionState.GetBool("Actividad3_3_Configured", false))
-            {
-                SessionState.SetBool("Actividad3_3_Configured", true);
-                ConfigurePhysicsAndMechanics();
-            }
-        };
-    }
-
     [MenuItem("Tools/Actividad 3.3 - Configurar Físicas y Mecánicas 2D")]
     public static void ConfigurePhysicsAndMechanics()
     {

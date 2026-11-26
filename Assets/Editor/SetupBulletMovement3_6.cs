@@ -4,21 +4,8 @@ using UnityEngine;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 
-[InitializeOnLoad]
 public class SetupBulletMovement3_6
 {
-    static SetupBulletMovement3_6()
-    {
-        EditorApplication.delayCall += () =>
-        {
-            if (!SessionState.GetBool("Actividad3_6_Configured", false))
-            {
-                SessionState.SetBool("Actividad3_6_Configured", true);
-                ConfigureBulletMovement();
-            }
-        };
-    }
-
     [MenuItem("Tools/Actividad 3.6 - Configurar Movimiento y Trayectoria de Bala")]
     public static void ConfigureBulletMovement()
     {

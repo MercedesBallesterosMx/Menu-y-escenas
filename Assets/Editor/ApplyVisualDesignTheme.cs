@@ -11,6 +11,7 @@ public class ApplyVisualDesignTheme
     {
         EditorApplication.delayCall += () =>
         {
+            if (EditorApplication.isPlayingOrWillChangePlaymode) return;
             if (!SessionState.GetBool("VisualDesignThemeApplied", false))
             {
                 SessionState.SetBool("VisualDesignThemeApplied", true);
@@ -22,6 +23,12 @@ public class ApplyVisualDesignTheme
     [MenuItem("Tools/Actividad 3.2 - Aplicar Diseño Visual del Videojuego")]
     public static void ApplyTheme()
     {
+        if (EditorApplication.isPlayingOrWillChangePlaymode)
+        {
+            Debug.LogWarning("[Diseño Visual 2D] Detén el modo Play antes de aplicar y guardar el diseño.");
+            return;
+        }
+
         Debug.Log("[Diseño Visual 2D] Aplicando texturas estilizadas, personaje tipo héroe y escenario...");
 
         // 1. Configurar importadores de texturas para Pixel Art nítido

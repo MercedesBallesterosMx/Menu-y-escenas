@@ -4,21 +4,8 @@ using UnityEngine;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 
-[InitializeOnLoad]
 public class SetupPlayerMovement3_5
 {
-    static SetupPlayerMovement3_5()
-    {
-        EditorApplication.delayCall += () =>
-        {
-            if (!SessionState.GetBool("Actividad3_5_Configured", false))
-            {
-                SessionState.SetBool("Actividad3_5_Configured", true);
-                ConfigurePlayerMovement();
-            }
-        };
-    }
-
     [MenuItem("Tools/Actividad 3.5 - Configurar Movimiento del Jugador")]
     public static void ConfigurePlayerMovement()
     {

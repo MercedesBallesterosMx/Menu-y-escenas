@@ -6,22 +6,9 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEditor.Animations;
 
-[InitializeOnLoad]
 public class SetupSceneAndCapture
 {
     private static string outputDir = @"c:\Users\espar\OneDrive\Documentos\Proyectos_universitarios\entregas\3.1. La escena principal y la estructura del personaje";
-
-    static SetupSceneAndCapture()
-    {
-        EditorApplication.delayCall += () =>
-        {
-            if (!SessionState.GetBool("Setup2DSceneExecuted", false))
-            {
-                SessionState.SetBool("Setup2DSceneExecuted", true);
-                ExecuteSetupAndCapture();
-            }
-        };
-    }
 
     [MenuItem("Tools/Actividad 3.1 - Configurar Escena 2D y Capturar")]
     public static void ExecuteSetupAndCapture()

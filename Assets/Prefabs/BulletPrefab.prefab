@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 7928123076030739322}
   - component: {fileID: 1215662883850046137}
   - component: {fileID: 7680815148062223077}
+  - component: {fileID: 3050610314388339265}
   m_Layer: 0
   m_Name: BulletPrefab
   m_TagString: Untagged
@@ -174,3 +175,21 @@ MonoBehaviour:
   lifeTime: 3
   damage: 25
   impactEffectPrefab: {fileID: 0}
+--- !u!114 &3050610314388339265
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 489186785185562900}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 88ec88b3d2eeb184bb1d3533aaa8a42b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BulletMovementController2D
+  bulletSpeed: 16
+  lifeTime: 3
+  travelDirection: {x: 1, y: 0}
+  impactLayers:
+    serializedVersion: 2
+    m_Bits: 0
