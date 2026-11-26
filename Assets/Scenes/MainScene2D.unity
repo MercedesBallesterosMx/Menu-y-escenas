@@ -300,6 +300,8 @@ GameObject:
   - component: {fileID: 818596483}
   - component: {fileID: 818596482}
   - component: {fileID: 818596481}
+  - component: {fileID: 818596485}
+  - component: {fileID: 818596484}
   m_Layer: 0
   m_Name: Platform_Floating_Right
   m_TagString: Untagged
@@ -338,7 +340,7 @@ BoxCollider2D:
     serializedVersion: 2
     m_Bits: 4294967295
   m_IsTrigger: 0
-  m_UsedByEffector: 0
+  m_UsedByEffector: 1
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
@@ -428,6 +430,39 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &818596484
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 818596480}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b832be6809e02f04a8edca8beec14e92, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlatformEffectorController2D
+  surfaceArc: 170
+  allowDropThrough: 1
+--- !u!251 &818596485
+PlatformEffector2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 818596480}
+  m_Enabled: 1
+  m_UseColliderMask: 1
+  m_ColliderMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_RotationalOffset: 0
+  m_UseOneWay: 1
+  m_UseOneWayGrouping: 0
+  m_SurfaceArc: 170
+  m_UseSideFriction: 0
+  m_UseSideBounce: 0
+  m_SideArc: 1
 --- !u!1 &832955413
 GameObject:
   m_ObjectHideFlags: 0
@@ -438,6 +473,7 @@ GameObject:
   m_Component:
   - component: {fileID: 832955415}
   - component: {fileID: 832955414}
+  - component: {fileID: 832955416}
   m_Layer: 0
   m_Name: Background_Parallax
   m_TagString: Untagged
@@ -520,6 +556,21 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &832955416
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 832955413}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a8a844b40016874bb528a1284b7898a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CameraParallaxBackground2D
+  cameraTransform: {fileID: 0}
+  parallaxEffectX: 0.35
+  parallaxEffectY: 0.15
 --- !u!1 &946969743
 GameObject:
   m_ObjectHideFlags: 0
@@ -531,6 +582,7 @@ GameObject:
   - component: {fileID: 946969746}
   - component: {fileID: 946969745}
   - component: {fileID: 946969744}
+  - component: {fileID: 946969747}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -606,12 +658,32 @@ Transform:
   m_GameObject: {fileID: 946969743}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -10}
+  m_LocalPosition: {x: 0, y: 1.25, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &946969747
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 946969743}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78d42d15874b93b40950919db6e6322b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CameraController2D
+  target: {fileID: 1953851068}
+  offset: {x: 0, y: 1.25, z: -10}
+  smoothTime: 0.15
+  lookAheadFactor: 1.2
+  targetOrthographicSize: 5
+  enableBounds: 1
+  minBounds: {x: -12, y: -3.5}
+  maxBounds: {x: 12, y: 5.5}
 --- !u!1 &1369391728
 GameObject:
   m_ObjectHideFlags: 0
@@ -659,6 +731,8 @@ GameObject:
   - component: {fileID: 1953851063}
   - component: {fileID: 1953851062}
   - component: {fileID: 1953851069}
+  - component: {fileID: 1953851070}
+  - component: {fileID: 1953851071}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -753,7 +827,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDamping: 0
   m_AngularDamping: 0.05
-  m_GravityScale: 2
+  m_GravityScale: 2.8
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -907,6 +981,61 @@ MonoBehaviour:
   onShootEvent:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &1953851070
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1953851061}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f085c7df09be29e4b84cc5aea92945e0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlatformerPhysicsMechanics2D
+  baseGravityScale: 2.8
+  fallGravityMultiplier: 2.4
+  lowJumpMultiplier: 2
+  jumpForce: 13.5
+  coyoteTime: 0.12
+  jumpBufferTime: 0.1
+  groundCheckPoint: {fileID: 0}
+  groundCheckRadius: 0.25
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  onJumpExecuted:
+    m_PersistentCalls:
+      m_Calls: []
+  onGroundedLand:
+    m_PersistentCalls:
+      m_Calls: []
+  onGroundedStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &1953851071
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1953851061}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9eb5f52b8fea4f4499b8527cbd23ad1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AdvancedPlayerMovement2D
+  maxMoveSpeed: 8
+  accelerationRate: 45
+  decelerationRate: 50
+  facingRight: 1
+  firePoint: {fileID: 0}
+  onHorizontalSpeedChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  onDirectionFlipped:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &2135211468
 GameObject:
   m_ObjectHideFlags: 0
@@ -918,6 +1047,8 @@ GameObject:
   - component: {fileID: 2135211471}
   - component: {fileID: 2135211470}
   - component: {fileID: 2135211469}
+  - component: {fileID: 2135211473}
+  - component: {fileID: 2135211472}
   m_Layer: 0
   m_Name: Platform_Floating_Left
   m_TagString: Untagged
@@ -956,7 +1087,7 @@ BoxCollider2D:
     serializedVersion: 2
     m_Bits: 4294967295
   m_IsTrigger: 0
-  m_UsedByEffector: 0
+  m_UsedByEffector: 1
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
@@ -1046,6 +1177,39 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2135211472
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2135211468}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b832be6809e02f04a8edca8beec14e92, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlatformEffectorController2D
+  surfaceArc: 170
+  allowDropThrough: 1
+--- !u!251 &2135211473
+PlatformEffector2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2135211468}
+  m_Enabled: 1
+  m_UseColliderMask: 1
+  m_ColliderMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_RotationalOffset: 0
+  m_UseOneWay: 1
+  m_UseOneWayGrouping: 0
+  m_SurfaceArc: 170
+  m_UseSideFriction: 0
+  m_UseSideBounce: 0
+  m_SideArc: 1
 --- !u!1 &2139490549
 GameObject:
   m_ObjectHideFlags: 0
@@ -1057,6 +1221,9 @@ GameObject:
   - component: {fileID: 2139490551}
   - component: {fileID: 2139490550}
   - component: {fileID: 2139490552}
+  - component: {fileID: 2139490553}
+  - component: {fileID: 2139490554}
+  - component: {fileID: 2139490555}
   m_Layer: 0
   m_Name: '[Managers]'
   m_TagString: Untagged
@@ -1111,6 +1278,48 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PrefabManager2D
   bulletPrefab: {fileID: 489186785185562900, guid: 59f7d723b61fe9948a60ef38bf067c02, type: 3}
   weaponShooter: {fileID: 0}
+--- !u!114 &2139490553
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2139490549}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2715b8aea58def0498685bca6ac6953b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PhysicsMechanicsManager2D
+  player: {fileID: 0}
+  groundPlatform: {fileID: 0}
+--- !u!114 &2139490554
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2139490549}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f7938058c333c1f4ea66d210a96462d4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CameraConfigurationAuditor2D
+  targetCamera: {fileID: 0}
+  cameraController: {fileID: 0}
+--- !u!114 &2139490555
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2139490549}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f8571c60372550439246cfcb28246f4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerMovementAuditor2D
+  player: {fileID: 0}
+  movementScript: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
