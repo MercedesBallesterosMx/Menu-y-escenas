@@ -176,6 +176,11 @@ public class AdvancedPlayerMovement2D : MonoBehaviour
         currentScale.x = Mathf.Abs(currentScale.x) * (facingRight ? 1.0f : -1.0f);
         transform.localScale = currentScale;
 
+        if (spriteRenderer != null)
+        {
+            spriteRenderer.flipX = false; // Mantener siempre flipX en false para evitar doble inversión
+        }
+
         onDirectionFlipped?.Invoke(facingRight);
         Debug.Log($"[AdvancedPlayerMovement2D] Orientación actualizada: {(facingRight ? "Derecha (+X)" : "Izquierda (-X)")}");
     }

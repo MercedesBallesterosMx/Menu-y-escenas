@@ -153,21 +153,19 @@ public class PlayerAnimationStateController2D : MonoBehaviour
 
     private IEnumerator SquashStretchRoutine(float targetScaleX, float targetScaleY, float duration)
     {
-        Vector3 stretched = new Vector3(
-            Mathf.Sign(transform.localScale.x) * Mathf.Abs(initialScale.x) * targetScaleX,
-            initialScale.y * targetScaleY,
-            initialScale.z
-        );
-
         float elapsed = 0f;
         while (elapsed < duration)
         {
             elapsed += Time.deltaTime;
             float t = elapsed / duration;
-            transform.localScale = Vector3.Lerp(stretched, new Vector3(Mathf.Sign(transform.localScale.x) * Mathf.Abs(initialScale.x), initialScale.y, initialScale.z), t);
+            float currentSignX = transform.localScale.x >= 0f ? 1.0f : -1.0f;
+            float lerpX = Mathf.Lerp(targetScaleX, 1.0f, t);
+            float lerpY = Mathf.Lerp(targetScaleY, 1.0f, t);
+            transform.localScale = new Vector3(currentSignX * Mathf.Abs(initialScale.x) * lerpX, initialScale.y * lerpY, initialScale.z);
             yield return null;
         }
 
-        transform.localScale = new Vector3(Mathf.Sign(transform.localScale.x) * Mathf.Abs(initialScale.x), initialScale.y, initialScale.z);
+        float finalSignX = transform.localScale.x >= 0f ? 1.0f : -1.0f;
+        transform.localScale = new Vector3(finalSignX * Mathf.Abs(initialScale.x), initialScale.y, initialScale.z);
     }
 }

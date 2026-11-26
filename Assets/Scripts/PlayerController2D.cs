@@ -180,6 +180,12 @@ public class PlayerController2D : MonoBehaviour
     /// </summary>
     private void ApplyMovement()
     {
+        // Si AdvancedPlayerMovement2D está presente en el objeto, él gobierna el desplazamiento horizontal
+        if (GetComponent<AdvancedPlayerMovement2D>() != null)
+        {
+            return;
+        }
+
         Vector2 targetVelocity = new Vector2(horizontalInput * moveSpeed, rb2D.linearVelocity.y);
         rb2D.linearVelocity = Vector2.SmoothDamp(rb2D.linearVelocity, targetVelocity, ref currentVelocity, movementSmoothing);
 
@@ -216,21 +222,20 @@ public class PlayerController2D : MonoBehaviour
     }
 
     /// <summary>
-    /// Invierte la orientación horizontal del personaje.
+    /// Invierte la orientación horizontal del personaje mediante escala en X,
+    /// asegurando que hijos como FirePoint y colisionadores se volteen simétricamente.
     /// </summary>
     private void FlipCharacter()
     {
         facingRight = !facingRight;
 
+        Vector3 currentScale = transform.localScale;
+        currentScale.x = Mathf.Abs(currentScale.x) * (facingRight ? 1.0f : -1.0f);
+        transform.localScale = currentScale;
+
         if (spriteRenderer != null)
         {
-            spriteRenderer.flipX = !facingRight;
-        }
-        else
-        {
-            Vector3 currentScale = transform.localScale;
-            currentScale.x *= -1f;
-            transform.localScale = currentScale;
+            spriteRenderer.flipX = false; // Nunca usar flipX simultáneamente para evitar cancelaciones
         }
     }
 
