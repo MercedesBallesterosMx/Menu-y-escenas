@@ -102,6 +102,16 @@ public class UniformFireRateController2D : MonoBehaviour
             return false; // Bloquea disparos erráticos prematuros
         }
 
+        // 2. Control de proyectiles simultáneos máximos
+        if (maxActiveProjectiles > 0)
+        {
+            var activeProjectiles = FindObjectsByType<MissileActionEffects2D>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
+            if (activeProjectiles.Length >= maxActiveProjectiles)
+            {
+                return false;
+            }
+        }
+
         // 2. Validar separación espacial si el personaje está quieto
         Vector2 currentMuzzlePos = muzzleFirePoint.position;
         if (Vector2.Distance(currentMuzzlePos, lastFiredPosition) < (minProjectileSpacing * 0.1f) &&

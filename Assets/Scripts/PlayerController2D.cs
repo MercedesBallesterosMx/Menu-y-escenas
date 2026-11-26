@@ -45,6 +45,7 @@ public class PlayerController2D : MonoBehaviour
     [Header("Orientación del Sprite")]
     [Tooltip("Indica si el sprite mira originalmente hacia la derecha.")]
     [SerializeField] private bool facingRight = true;
+    public bool IsFacingRight => facingRight;
 
     [Header("Eventos de Control para Animación")]
     public UnityEvent<float> onSpeedChanged;     // Envía la velocidad absoluta para transicionar Idle -> Walk

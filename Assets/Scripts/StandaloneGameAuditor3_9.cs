@@ -43,7 +43,7 @@ public class StandaloneGameAuditor3_9 : MonoBehaviour
         criterion1_StandaloneExecutableReady = (sceneCount >= 2);
 
         // 3. Comprobar botón de cierre y menú
-        MainMenu mm = FindFirstObjectByType<MainMenu>();
+        MainMenu mm = FindAnyObjectByType<MainMenu>();
         criterion2_MainMenuAndQuitButtonFunctional = (mm != null || SceneManager.GetActiveScene().name == "MainMenu" || SceneManager.GetActiveScene().name == "MainScene2D");
 
         criterion3_PublicRepositoryAccessible = true;

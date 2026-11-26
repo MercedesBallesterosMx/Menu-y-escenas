@@ -66,7 +66,7 @@ public class ActionEffectsAuditor2D : MonoBehaviour
         // 3. Auditar Criterio 3: Flujo Uniforme y Fluido sin Superposición
         if (uniformFireRateController == null)
         {
-            uniformFireRateController = FindFirstObjectByType<UniformFireRateController2D>();
+            uniformFireRateController = FindAnyObjectByType<UniformFireRateController2D>();
         }
 
         if (uniformFireRateController != null)

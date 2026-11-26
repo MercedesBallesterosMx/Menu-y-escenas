@@ -36,8 +36,8 @@ public class DatabaseConnectionAuditor2D : MonoBehaviour
     [ContextMenu("Ejecutar Auditoría de Base de Datos (3.8)")]
     public void RunDatabaseAudit()
     {
-        if (progressManager == null) progressManager = FindFirstObjectByType<GameProgressDatabaseManager2D>();
-        if (databaseService == null) databaseService = FindFirstObjectByType<GameDatabaseCloudService2D>();
+        if (progressManager == null) progressManager = FindAnyObjectByType<GameProgressDatabaseManager2D>();
+        if (databaseService == null) databaseService = FindAnyObjectByType<GameDatabaseCloudService2D>();
 
         // 1. Auditar Criterio 1: Monedas en tiempo de ejecución
         CoinCollectible2D[] coinsInScene = FindObjectsByType<CoinCollectible2D>(FindObjectsSortMode.None);

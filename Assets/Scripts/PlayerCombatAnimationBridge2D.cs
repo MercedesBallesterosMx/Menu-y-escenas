@@ -27,7 +27,6 @@ public class PlayerCombatAnimationBridge2D : MonoBehaviour
     [Header("Parámetros de Mecanim")]
     [SerializeField] private string speedParam = "Speed";
     [SerializeField] private string shootTriggerParam = "Shoot";
-    [SerializeField] private string isGroundedParam = "isGrounded";
 
     [Header("Cadencia y Rendimiento")]
     [Tooltip("Tiempo mínimo entre disparos para erradicar retrasos manteniendo cadencia limpia.")]
