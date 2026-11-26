@@ -84,8 +84,10 @@ public static class SetupDatabaseConnection3_8
         GameObject managersObj = GameObject.Find("[Managers]");
         if (managersObj == null) managersObj = new GameObject("[Managers]");
 
-        if (managersObj.GetComponent<GameDatabaseCloudService2D>() == null)
-            managersObj.AddComponent<GameDatabaseCloudService2D>();
+        var cloudService = managersObj.GetComponent<GameDatabaseCloudService2D>();
+        if (cloudService == null)
+            cloudService = managersObj.AddComponent<GameDatabaseCloudService2D>();
+        cloudService.ProjectId = "videojuegos-2d-mercedes";
 
         if (managersObj.GetComponent<GameProgressDatabaseManager2D>() == null)
             managersObj.AddComponent<GameProgressDatabaseManager2D>();

@@ -36,7 +36,7 @@ public class GameDatabaseCloudService2D : MonoBehaviour
 
     [Header("Configuración de Base de Datos Cloud (Firebase Firestore)")]
     [Tooltip("URL base del proyecto Firebase Firestore.")]
-    [SerializeField] private string firestoreProjectId = "videojuegos-udg-2026b";
+    [SerializeField] private string firestoreProjectId = "videojuegos-2d-mercedes";
 
     [Tooltip("Colección en la base de datos Firestore donde se almacenan las partidas.")]
     [SerializeField] private string collectionName = "player_progress";
